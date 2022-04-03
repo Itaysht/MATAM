@@ -71,7 +71,6 @@ bool basicTest(){
     ASSERT_TEST(RLEListAppend(list, 'a') == RLE_LIST_SUCCESS, destroy);    // acbababaaa
 
     ASSERT_TEST(RLEListRemove(list, 1) == RLE_LIST_SUCCESS, destroy); // abababaaa
-    ASSERT_TEST(RLEListNumOfNodes(list) == 7, destroy);
 
     // check if the represented string is "abababaaa"
     const char *s = "abababaaa";
