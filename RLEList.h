@@ -11,7 +11,7 @@
 /**
 * Run Length Encoding List
 *
-* Implements an RLE list containing characters.
+* Implements an RLE list containing a sequence of characters.
 *
 * The following functions are available:
 *   RLEListCreate	        - Creates a new empty RLE list.
@@ -27,7 +27,7 @@
 
 /** 
 * Typedef for defining the RLE list.
-* The implementation of struct RLEList_t needs to be defined in RLEList.c
+* Complete the implementation of struct RLEList_t defined in RLEList.c
 */
 typedef struct RLEList_t *RLEList;
 
@@ -43,13 +43,16 @@ typedef enum {
 
 /** 
  * Type of function for mapping characters.
- * This function should return the mapped characters
+ * This function should accept a character in the list and return the mapped character
  */
-typedef char (*mapFunction)(char);
+typedef char (*MapFunction)(char);
 
 
 /**
 * RLEListCreate: Allocates a new empty RLE list.
+*
+* The function allocates and returns a new RLEList struct containing a list with no characters.
+* Note that the user must free the returned list using RLEListDestroy() once it is no longer needed.
 *
 * @return
 * 	NULL if allocations failed.
@@ -112,7 +115,7 @@ RLEListResult RLEListRemove(RLEList list, int index);
 * 	RLE_LIST_INDEX_OUT_OF_BOUNDS if given index is not withing the list's bounds.
 * 	LIST_SUCCESS the character found at index has been retrieved successfully.
 * @return
-* 	-1 if result is not RLE_LIST_SUCCESS.
+* 	0 if result is not RLE_LIST_SUCCESS.
 * 	The character found at given index in case of success.   
 */
 char RLEListGet(RLEList list, int index, RLEListResult *result);
@@ -128,22 +131,22 @@ char RLEListGet(RLEList list, int index, RLEListResult *result);
 * 	LIST_SUCCESS the character found at index has been retrieved successfully.
 * @return
 * 	NULL if result is not RLE_LIST_SUCCESS.
-* 	The string that correspondent to the recieved RLE list.   
+* 	The string that correspondent to the received RLE list.   
 */
 char* RLEListExportToString(RLEList list, RLEListResult* result);
 
 
 /**
-*   RLEListMap: Change the given RLE list's characters according to the recieved mapping function.
+*   RLEListMap: Change the given RLE list's characters according to the received mapping function.
 *               This function replaces each character of the give RLE list with its mapped character.
 *
 * @param list - The RLE list to edit.
-* @param mapFunction - Pointer to a function of type mapFunction. 
+* @param MapFunction - Pointer to a function of type MapFunction. 
 * @return
 * 	RLE_LIST_NULL_ARGUMENT if a NULL was sent as a paramater.
 * 	LIST_SUCCESS if the mapping is done successfully.
 */
-RLEListResult RLEListMap(RLEList list, mapFunction map_function);
+RLEListResult RLEListMap(RLEList list, MapFunction map_function);
 
 
 #endif // HW1_RLELIST_H
