@@ -2,6 +2,6 @@
 
 typedef struct {
     //TODO: implement
-}* RLEList_t;
+} RLEList_t;
 
 //implement the functions here
