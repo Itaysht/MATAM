@@ -1,7 +1,7 @@
 #include "RLEList.h"
 
-typedef struct {
+struct RLEList_t{
     //TODO: implement
-} RLEList_t;
+};
 
 //implement the functions here
