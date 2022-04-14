@@ -1,12 +1,13 @@
 #include "RLEList.h"
 #include <stdio.h>
 #include <stdlib.h>
+#define NULL_CHAR '\0'
 
 
 typedef struct RLEList_t {
     char letter;
     int numOfReps;
-    struct list* next;
+    struct RLEList_t* next;
 } *RLEList;
 
 
@@ -17,7 +18,7 @@ RLEList RLEListCreate()
     {
         return NULL;
     }
-    ptr->letter = '';
+    ptr->letter = 'a';
     ptr->numOfReps = 0;
     ptr->next = NULL;
     return ptr;
@@ -35,7 +36,7 @@ void RLEListDestroy(RLEList list)
 
 RLEListResult RLEListAppend(RLEList list, char value)
 {
-    if ((list == NULL) || (value == NULL)){    //Checks if one of parameter is null
+    if ((list == NULL) || (value == NULL_CHAR)){    //Checks if one of parameter is null
         return RLE_LIST_NULL_ARGUMENT;
     }
 
@@ -89,7 +90,23 @@ int RLEListSize(RLEList list)
 
 int main()
 {
-
+    //my test
+    RLEList head = RLEListCreate();
+    RLEListAppend(head,'c');
+    RLEListAppend(head,'f');
+    RLEListAppend(head,'e');
+    RLEListAppend(head,'z');
+    RLEListAppend(head,'s');
+    RLEListAppend(head,'s');
+    RLEListAppend(head,'a');
+    RLEListAppend(head,'a');
+    RLEListAppend(head,'s');
+    for (RLEList ptr = head; ptr != NULL; ptr=ptr->next){
+        printf("%c", ptr->letter);
+    }
+    printf("\n");
+    printf("%d\n", RLEListSize(head));
+    RLEListDestroy(head);
     return 0;
 }
 
