@@ -1,11 +1,13 @@
 #include "RLEList.h"
+#include <stdio.h>
 #include <stdlib.h>
+#define NULL_CHAR '\0'
 
 
 struct RLEList_t {
     char letter;
     int numOfReps;
-    struct list* next;
+    struct RLEList_t* next;
 };
 
 
@@ -16,7 +18,7 @@ RLEList RLEListCreate()
     {
         return NULL;
     }
-    ptr->letter = ' ';
+    ptr->letter = 'a';
     ptr->numOfReps = 0;
     ptr->next = NULL;
     return ptr;
@@ -34,7 +36,7 @@ void RLEListDestroy(RLEList list)
 
 RLEListResult RLEListAppend(RLEList list, char value)
 {
-    if ((list == NULL) || (value == NULL)){    //Checks if one of parameter is null
+    if ((list == NULL) || (value == NULL_CHAR)){    //Checks if one of parameter is null
         return RLE_LIST_NULL_ARGUMENT;
     }
 
@@ -88,11 +90,11 @@ int RLEListSize(RLEList list)
 
 RLEListResult RLEListRemove(RLEList list, int index)
 {
-    if (list == NULL || index == NULL)
+    if (list == NULL)
     {
         return RLE_LIST_NULL_ARGUMENT;
     }
-    if (index > RLEListSize(list))
+    if (index > RLEListSize(list) || index < 1)
     {
         return RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
@@ -131,25 +133,26 @@ RLEListResult RLEListRemove(RLEList list, int index)
 
 int main()
 {
-    RLEList list = RLEListCreate();
-    RLEListAppend(list,'a');
-    RLEListAppend(list,'a');
-    RLEListAppend(list,'b');
-    RLEListAppend(list,'c');
-    RLEList nextNode = list;
-    while (!nextNode)
-    {
-        printf("%d", nextNode->numOfReps);
-        nextNode = nextNode->next;
+    //my test
+    RLEList head = RLEListCreate();
+    RLEListAppend(head,'c');
+    RLEListAppend(head,'f');
+    RLEListAppend(head,'e');
+    RLEListAppend(head,'z');
+    RLEListAppend(head,'s');
+    RLEListAppend(head,'s');
+    RLEListAppend(head,'a');
+    RLEListAppend(head,'a');
+    RLEListAppend(head,'s');
+    for (RLEList ptr = head; ptr != NULL; ptr=ptr->next){
+        printf("%c", ptr->letter);
     }
-    RLEListRemove(list, 2);
-    nextNode = list;
-    while (!nextNode)
-    {
-        printf("%d", nextNode->numOfReps);
-        nextNode = nextNode->next;
+    printf("\n");
+    RLEListRemove(head, 0);
+     for (RLEList ptr = head; ptr != NULL; ptr=ptr->next){
+        printf("%c", ptr->letter);
     }
-
+    RLEListDestroy(head);
     return 0;
 }
 
