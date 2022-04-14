@@ -4,11 +4,11 @@
 #define NULL_CHAR '\0'
 
 
-typedef struct RLEList_t {
+struct RLEList_t {
     char letter;
     int numOfReps;
     struct RLEList_t* next;
-} *RLEList;
+};
 
 
 RLEList RLEListCreate()
@@ -18,7 +18,7 @@ RLEList RLEListCreate()
     {
         return NULL;
     }
-    ptr->letter = 'a';
+    ptr->letter = ' ';
     ptr->numOfReps = 0;
     ptr->next = NULL;
     return ptr;
@@ -38,13 +38,6 @@ RLEListResult RLEListAppend(RLEList list, char value)
 {
     if ((list == NULL) || (value == NULL_CHAR)){    //Checks if one of parameter is null
         return RLE_LIST_NULL_ARGUMENT;
-    }
-
-    if (list->numOfReps == 0)                  //When it's the first char in the list
-    {
-        list->letter = value;
-        list->numOfReps = 1;
-        return RLE_LIST_SUCCESS;
     }
 
     RLEList nextNode = list;
@@ -88,6 +81,43 @@ int RLEListSize(RLEList list)
     return counter;
 }
 
+RLEListResult RLEListRemove(RLEList list, int index)
+{
+    if (list == NULL)
+    {
+        return RLE_LIST_NULL_ARGUMENT;
+    }
+    if (index > RLEListSize(list) || index < 1)
+    {
+        return RLE_LIST_INDEX_OUT_OF_BOUNDS;
+    }
+    int counter = 0;
+    RLEList prevNode = list;
+    RLEList currNode = list->next;
+    while (counter < index)
+    {
+        counter += currNode->numOfReps;
+        if (counter >= index)
+        {
+            break;
+        }
+        prevNode = currNode;
+        currNode = currNode->next;
+        
+    }
+    if (currNode->numOfReps > 1)
+    {
+        currNode->numOfReps -= 1;
+    }
+    else
+    {
+        prevNode->next = currNode->next;
+        free(currNode);
+    }
+    return RLE_LIST_SUCCESS;
+
+}
+
 int main()
 {
     //my test
@@ -105,7 +135,10 @@ int main()
         printf("%c", ptr->letter);
     }
     printf("\n");
-    printf("%d\n", RLEListSize(head));
+    RLEListRemove(head, 9);
+     for (RLEList ptr = head; ptr != NULL; ptr=ptr->next){
+        printf("%c", ptr->letter);
+    }
     RLEListDestroy(head);
     return 0;
 }
