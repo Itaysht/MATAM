@@ -1,13 +1,12 @@
 #include "RLEList.h"
-#include <stdio.h>
 #include <stdlib.h>
 
 
-typedef struct RLEList_t {
+struct RLEList_t {
     char letter;
     int numOfReps;
     struct list* next;
-} *RLEList;
+};
 
 
 RLEList RLEListCreate()
@@ -17,7 +16,7 @@ RLEList RLEListCreate()
     {
         return NULL;
     }
-    ptr->letter = '';
+    ptr->letter = ' ';
     ptr->numOfReps = 0;
     ptr->next = NULL;
     return ptr;
@@ -87,8 +86,69 @@ int RLEListSize(RLEList list)
     return counter;
 }
 
+RLEListResult RLEListRemove(RLEList list, int index)
+{
+    if (list == NULL || index == NULL)
+    {
+        return RLE_LIST_NULL_ARGUMENT;
+    }
+    if (index > RLEListSize(list))
+    {
+        return RLE_LIST_INDEX_OUT_OF_BOUNDS;
+    }
+    int counter = 0;
+    RLEList prevNode = NULL;
+    RLEList currNode = list;
+    while (counter < index)
+    {
+        counter += currNode->numOfReps;
+        if (counter >= index)
+        {
+            break;
+        }
+        prevNode = currNode;
+        currNode = currNode->next;
+        
+    }
+    if (currNode->numOfReps > 1)
+    {
+        currNode->numOfReps -= 1;
+    }
+    else
+    {
+        if (prevNode == NULL)
+        {
+            list = list->next;
+        }
+        else
+        {
+            prevNode->next = currNode->next;
+        }
+    }
+    return RLE_LIST_SUCCESS;
+
+}
+
 int main()
 {
+    RLEList list = RLEListCreate();
+    RLEListAppend(list,'a');
+    RLEListAppend(list,'a');
+    RLEListAppend(list,'b');
+    RLEListAppend(list,'c');
+    RLEList nextNode = list;
+    while (!nextNode)
+    {
+        printf("%d", nextNode->numOfReps);
+        nextNode = nextNode->next;
+    }
+    RLEListRemove(list, 2);
+    nextNode = list;
+    while (!nextNode)
+    {
+        printf("%d", nextNode->numOfReps);
+        nextNode = nextNode->next;
+    }
 
     return 0;
 }
