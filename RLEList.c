@@ -18,7 +18,7 @@ RLEList RLEListCreate()
     {
         return NULL;
     }
-    ptr->letter = 'a';
+    ptr->letter = ' ';
     ptr->numOfReps = 0;
     ptr->next = NULL;
     return ptr;
@@ -38,13 +38,6 @@ RLEListResult RLEListAppend(RLEList list, char value)
 {
     if ((list == NULL) || (value == NULL_CHAR)){    //Checks if one of parameter is null
         return RLE_LIST_NULL_ARGUMENT;
-    }
-
-    if (list->numOfReps == 0)                  //When it's the first char in the list
-    {
-        list->letter = value;
-        list->numOfReps = 1;
-        return RLE_LIST_SUCCESS;
     }
 
     RLEList nextNode = list;
@@ -99,8 +92,8 @@ RLEListResult RLEListRemove(RLEList list, int index)
         return RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
     int counter = 0;
-    RLEList prevNode = NULL;
-    RLEList currNode = list;
+    RLEList prevNode = list;
+    RLEList currNode = list->next;
     while (counter < index)
     {
         counter += currNode->numOfReps;
@@ -118,14 +111,8 @@ RLEListResult RLEListRemove(RLEList list, int index)
     }
     else
     {
-        if (prevNode == NULL)
-        {
-            list = list->next;
-        }
-        else
-        {
-            prevNode->next = currNode->next;
-        }
+        prevNode->next = currNode->next;
+        free(currNode);
     }
     return RLE_LIST_SUCCESS;
 
@@ -148,7 +135,7 @@ int main()
         printf("%c", ptr->letter);
     }
     printf("\n");
-    RLEListRemove(head, 0);
+    RLEListRemove(head, 1);
      for (RLEList ptr = head; ptr != NULL; ptr=ptr->next){
         printf("%c", ptr->letter);
     }
