@@ -9,7 +9,10 @@ struct RLEList_t {
     int numOfReps;
     struct RLEList_t* next;
 };
+<<<<<<< HEAD
 
+=======
+>>>>>>> c3039aa409c4dba6a4c1fbc11e72c329b37dc7d5
 
 RLEList RLEListCreate()
 {
