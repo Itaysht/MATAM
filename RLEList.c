@@ -4,12 +4,11 @@
 #define NULL_CHAR '\0'
 
 
-typedef struct RLEList_t {
+struct RLEList_t {
     char letter;
     int numOfReps;
     struct RLEList_t* next;
-} *RLEList;
-
+};
 
 RLEList RLEListCreate()
 {
