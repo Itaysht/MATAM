@@ -86,17 +86,17 @@ RLEListResult RLEListRemove(RLEList list, int index)
     {
         return RLE_LIST_NULL_ARGUMENT;
     }
-    if (index > RLEListSize(list) || index < 1)
+    if (index >= RLEListSize(list) || index < 0)
     {
         return RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
     int counter = 0;
     RLEList prevNode = list;
     RLEList currNode = list->next;
-    while (counter < index)
+    while (counter <= index)
     {
         counter += currNode->numOfReps;
-        if (counter >= index)
+        if (counter > index)
         {
             break;
         }
@@ -126,7 +126,7 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
     }
 
     int length = RLEListSize(list);
-    if ((length < index) || (index < 1))           //if the index is out of bounds
+    if ((length <= index) || (index < 0))           //if the index is out of bounds
     {
         *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
         return 0;
@@ -136,7 +136,7 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
     ptr = ptr->next;
     while (ptr != NULL)
     {
-        if (index <= ptr->numOfReps)         //if the index is within the appearences of a specific letter
+        if (index < ptr->numOfReps)         //if the index is within the appearences of a specific letter
         {
             *result = RLE_LIST_SUCCESS;
             return ptr->letter;
@@ -285,7 +285,11 @@ int main()
     printf("\n");
     RLEListResult res = RLE_LIST_SUCCESS;
     printf("Testing Get char from index\n");
-    printf("%c\n\n", RLEListGet(head, 1, &res));     //test get
+    printf("%c\n", RLEListGet(head, 1, &res));     //test get
+    printf("%c\n", RLEListGet(head, 0, &res));     //test get
+    printf("%c\n", RLEListGet(head, 10, &res));     //test get
+    printf("%c\n", RLEListGet(head, 17, &res));     //test get
+    printf("%c\n", RLEListGet(head, 18, &res));     //test get
     printf("Testing mapping\n");
     RLEListMap(head, PlusOne);                                  //test mapping
     for (RLEList ptr = head; ptr != NULL; ptr=ptr->next){
