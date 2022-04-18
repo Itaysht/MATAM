@@ -29,6 +29,7 @@
 * Typedef for defining the RLE list.
 * Complete the implementation of struct RLEList_t defined in RLEList.c
 */
+
 typedef struct RLEList_t *RLEList;
 
 /** Enum used for returning error codes from RLE list functions */
@@ -124,13 +125,14 @@ char RLEListGet(RLEList list, int index, RLEListResult *result);
 /**
 *   RLEListExportToString: Returns the characters found in an RLE list as a string.
 *
-* @param list - The RLE list to be exported as a string.
+* @param list - The RLE list to retrieve the characters from.
 * @param result - Pointer to be used to store the result of the operation, if it is NULL, the result will not be saved.
 * 	RLE_LIST_NULL_ARGUMENT if a NULL was sent to the function as list.
-* 	LIST_SUCCESS the RLE list has been successfuly exported as a string.
+* 	RLE_LIST_INDEX_OUT_OF_BOUNDS if given index is not withing the list's bounds.
+* 	LIST_SUCCESS the character found at index has been retrieved successfully.
 * @return
 * 	NULL if result is not RLE_LIST_SUCCESS.
-* 	The string that corresponds to the received RLE list.
+* 	The string that correspondent to the received RLE list.   
 */
 char* RLEListExportToString(RLEList list, RLEListResult* result);
 

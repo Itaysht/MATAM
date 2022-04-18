@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #define NULL_CHAR '\0'
 
-
 struct RLEList_t {
     char letter;
     int numOfReps;
@@ -154,10 +153,18 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
         return RLE_LIST_NULL_ARGUMENT;
     }
 
+//    int length = RLEListSize(list);
+//    char* mapped_str = (char*) malloc(length);
     RLEList ptr = list->next;
+//    int i = 0;
     while (ptr != NULL)
     {
-        ptr->letter = map_function(ptr->letter);              //every node will change its letter according to the given function
+//        for (int j = 0; j < ptr->numOfReps; j++)
+//        {
+//            mapped_str[i+j] = map_function(ptr->letter);
+//        }
+//        i = i + ptr->numOfReps;
+        ptr->letter = map_function(ptr->letter);
         ptr = ptr->next;
     }
     return RLE_LIST_SUCCESS;
