@@ -1,9 +1,3 @@
-//
-// Created by itay on 16/04/2022.
-//
-
-#include <stdio.h>
-#include <stdbool.h>
 #include "AsciiArtTool.h"
 #define CHUNK_LINE 256
 
