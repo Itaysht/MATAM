@@ -1,5 +1,4 @@
 #include "RLEList.h"
-#include <stdio.h>
 #include <stdlib.h>
 #define NULL_CHAR '\0'
 
@@ -34,23 +33,23 @@ void RLEListDestroy(RLEList list)
 
 RLEListResult RLEListAppend(RLEList list, char value)
 {
-    if ((list == NULL) || (value == NULL_CHAR)){    //Checks if one of parameter is null
+    if ((list == NULL) || (value == NULL_CHAR)){
         return RLE_LIST_NULL_ARGUMENT;
     }
 
     RLEList nextNode = list;
-    while (nextNode->next)                    //Gets to the last node in the list
+    while (nextNode->next)
     {
         nextNode = nextNode->next;
     }
 
-    if (nextNode->letter == value)            //If the value is as the value of the last node in the list
+    if (nextNode->letter == value)
     {
         nextNode->numOfReps += 1;
         return RLE_LIST_SUCCESS;
     }
 
-    RLEList newNode = RLEListCreate();        //Create new node with the new value
+    RLEList newNode = RLEListCreate();
     if (newNode == NULL){
         return RLE_LIST_OUT_OF_MEMORY;
     }
@@ -118,16 +117,22 @@ RLEListResult RLEListRemove(RLEList list, int index)
 
 char RLEListGet(RLEList list, int index, RLEListResult *result)
 {
-    if (list == NULL)                       //if null is given as an argument
+    if (list == NULL)
     {
-        *result = RLE_LIST_NULL_ARGUMENT;
+        if (result != NULL)
+        {
+            *result = RLE_LIST_NULL_ARGUMENT;
+        }
         return 0;
     }
 
     int length = RLEListSize(list);
-    if ((length <= index) || (index < 0))           //if the index is out of bounds
+    if ((length <= index) || (index < 0))
     {
-        *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
+        if (result != NULL)
+        {
+            *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
+        }
         return 0;
     }
 
@@ -135,12 +140,15 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
     ptr = ptr->next;
     while (ptr != NULL)
     {
-        if (index < ptr->numOfReps)         //if the index is within the appearences of a specific letter
+        if (index < ptr->numOfReps)
         {
-            *result = RLE_LIST_SUCCESS;
+            if (result != NULL)
+            {
+                *result = RLE_LIST_SUCCESS;
+            }
             return ptr->letter;
         }
-        index = index - ptr->numOfReps;     //else, we'll check the index in the next node
+        index = index - ptr->numOfReps;
         ptr = ptr->next;
     }
     return 0;             //won't get here anyway
@@ -148,25 +156,39 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
 
 RLEListResult RLEListMap(RLEList list, MapFunction map_function)
 {
-    if ((list == NULL) || (map_function == NULL))    //if one of the arguments are null
+    if ((list == NULL) || (map_function == NULL))
     {
         return RLE_LIST_NULL_ARGUMENT;
     }
 
-//    int length = RLEListSize(list);
-//    char* mapped_str = (char*) malloc(length);
+    int length = RLEListSize(list);
+    char* convert_to_string = (char*) malloc(length);
+    if (convert_to_string == NULL)
+    {
+        return RLE_LIST_OUT_OF_MEMORY;
+    }
+
     RLEList ptr = list->next;
-//    int i = 0;
+    int i = 0;
     while (ptr != NULL)
     {
-//        for (int j = 0; j < ptr->numOfReps; j++)
-//        {
-//            mapped_str[i+j] = map_function(ptr->letter);
-//        }
-//        i = i + ptr->numOfReps;
-        ptr->letter = map_function(ptr->letter);
+        for (int j = 0; j < ptr->numOfReps; j++)
+        {
+            convert_to_string[i+j] = map_function(ptr->letter);
+        }
+        i = i + ptr->numOfReps;
         ptr = ptr->next;
     }
+
+    RLEList ptr_to_destroy = list->next;
+    list->next = NULL;
+    RLEListDestroy(ptr_to_destroy);
+
+    for (int j = 0; j < length; j++)
+    {
+        RLEListAppend(list, convert_to_string[j]);
+    }
+    free(convert_to_string);
     return RLE_LIST_SUCCESS;
 }
 
@@ -207,8 +229,8 @@ static int LengthOfWholeString(RLEList list)
     while (ptr != NULL)
     {
         temp = ptr->numOfReps;
-        counter += 2;                          //char and new line
-        counter += NumberOfCharsFromInt(temp); //number of digit
+        counter += 2;
+        counter += NumberOfCharsFromInt(temp);
         ptr = ptr->next;
     }
     return counter;
@@ -216,19 +238,28 @@ static int LengthOfWholeString(RLEList list)
 
 char* RLEListExportToString(RLEList list, RLEListResult* result)
 {
-    if (list == NULL)                           //if the argument list is null
+    if (list == NULL)
     {
-        *result = RLE_LIST_NULL_ARGUMENT;
+        if (result != NULL)
+        {
+            *result = RLE_LIST_NULL_ARGUMENT;
+        }
         return NULL;
     }
+
 
     int length = LengthOfWholeString(list);        //calculating the length of the dynamic array
     char* str_of_rle = (char*) malloc(length);     //allocating an array of chars which would be the answer
     if (str_of_rle == NULL)
     {
-        *result = RLE_LIST_OUT_OF_MEMORY;        //Null if the allocation failed
+        if (result != NULL)
+        {
+            *result = RLE_LIST_OUT_OF_MEMORY;        //Null if the allocation failed
+        }
         return NULL;
     }
+
+
     int i = 0, temp, num_of_chars;
     RLEList ptr = list->next;
     while (ptr != NULL)                 //each node will split to three parts: letter, chars of int
@@ -246,73 +277,9 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
         i = i + num_of_chars + 1;                 //moving on to the next node, index-wise
         ptr = ptr->next;
     }
-    *result = RLE_LIST_SUCCESS;
+    if (result != NULL)
+    {
+        *result = RLE_LIST_SUCCESS;
+    }
     return str_of_rle;
 }
-
-char PlusOne(char c)
-{
-    return c + 1;
-}
-
-int main()
-{
-    //my test
-    RLEList head = RLEListCreate();
-    RLEListAppend(head,'c');                  //test append
-    RLEListAppend(head,'f');
-    RLEListAppend(head,'e');
-    RLEListAppend(head,'e');
-    RLEListAppend(head,'e');
-    RLEListAppend(head,'e');
-    RLEListAppend(head,'e');
-    RLEListAppend(head,'e');
-    RLEListAppend(head,'e');
-    RLEListAppend(head,'e');
-    RLEListAppend(head,'e');
-    RLEListAppend(head,'e');
-    RLEListAppend(head,'e');
-    RLEListAppend(head,'e');
-    RLEListAppend(head,'z');
-    RLEListAppend(head,'s');
-    RLEListAppend(head,'s');
-    RLEListAppend(head,'a');
-    RLEListAppend(head,'a');
-    RLEListAppend(head,'s');
-    printf("Testing printing:\n");
-    for (RLEList ptr = head; ptr != NULL; ptr=ptr->next){      //test print
-        printf("%c ", ptr->letter);
-    }
-    printf("\n");
-    printf("Testing removing single char\n");
-     RLEListRemove(head, 19);                            //test remove
-     for (RLEList ptr = head; ptr != NULL; ptr=ptr->next){
-        printf("%c ", ptr->letter);
-    }
-    printf("\n");
-    RLEListResult res = RLE_LIST_SUCCESS;
-    printf("Testing Get char from index\n");
-    printf("%c\n", RLEListGet(head, 1, &res));     //test get
-    printf("%c\n", RLEListGet(head, 0, &res));     //test get
-    printf("%c\n", RLEListGet(head, 10, &res));     //test get
-    printf("%c\n", RLEListGet(head, 17, &res));     //test get
-    printf("%c\n", RLEListGet(head, 18, &res));     //test get
-    printf("Testing mapping\n");
-    RLEListMap(head, PlusOne);                                  //test mapping
-    for (RLEList ptr = head; ptr != NULL; ptr=ptr->next){
-        printf("%c ", ptr->letter);
-    }
-    printf("\n");
-    printf("Testing export to string\n");
-    char* ans = RLEListExportToString(head, &res);           //test export to string
-    for (int i = 0; i < LengthOfWholeString(head); i++)
-    {
-        printf("%c", ans[i]);
-    }
-    printf("\n");
-    free(ans);
-    RLEListDestroy(head);                         //test destroy
-    return 0;
-}
-
-//implement the functions here
