@@ -80,21 +80,22 @@ int RLEListSize(RLEList list)
 
 RLEListResult RLEListRemove(RLEList list, int index)
 {
+    int updated_idx = index + 1;
     if (list == NULL)
     {
         return RLE_LIST_NULL_ARGUMENT;
     }
-    if (index >= RLEListSize(list) || index < 0)
+    if (index >= RLEListSize(list) || updated_idx < 0)
     {
         return RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
     int counter = 0;
     RLEList prevNode = list;
     RLEList currNode = list->next;
-    while (counter <= index)
+    while (counter <= updated_idx)
     {
         counter += currNode->numOfReps;
-        if (counter > index)
+        if (counter > updated_idx)
         {
             break;
         }
