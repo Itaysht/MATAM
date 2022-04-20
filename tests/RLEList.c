@@ -280,7 +280,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
         i = i + num_of_chars + 1;                 //moving on to the next node, index-wise
         ptr = ptr->next;
     }
-    str_of_rle[length] = '\0';
+    str_of_rle[length] = NULL_CHAR;
     if (result != NULL)
     {
         *result = RLE_LIST_SUCCESS;
