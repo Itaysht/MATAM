@@ -1,16 +1,19 @@
 #include "AsciiArtTool.h"
-#define CHUNK_LINE 256
 
 RLEList asciiArtRead(FILE* in_stream)
 {
-    char lst_read[CHUNK_LINE];
+    char one_char;
     RLEList head = RLEListCreate();
-    while (fgets(lst_read, CHUNK_LINE, in_stream))
+    if (head == NULL)
     {
-        for (int i = 0; i < CHUNK_LINE; i++)
-        {
-            RLEListAppend(head, lst_read[i]);
-        }
+        return NULL;
+    }
+
+    one_char = fgetc(in_stream);
+    while (one_char != EOF)
+    {
+        RLEListAppend(head, one_char);
+        one_char = fgetc(in_stream);
     }
     return head;
 }
@@ -39,20 +42,9 @@ RLEListResult asciiArtPrint(RLEList list, FILE *out_stream)
                 c = ' ';
             }
         }
-        fputc(RLEListGet(list, i, &res), out_stream);
+        fputc(c, out_stream);
     }
     return res;
-}
-
-static int strLen(char* s)
-{
-    int counter = 0;
-    while (*s)
-    {
-        counter++;
-        s++;
-    }
-    return counter;
 }
 
 RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream)
@@ -64,10 +56,16 @@ RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream)
     }
 
     char *ans = RLEListExportToString(list, &res);
-    int length = strLen(ans);
+    if (ans == NULL)
+    {
+        return RLE_LIST_OUT_OF_MEMORY;
+    }
+
+    int length = strlen(ans);
     for (int i=0; i < length; i++)
     {
         fputc(ans[i], out_stream);
     }
+    free(ans);
     return res;
 }

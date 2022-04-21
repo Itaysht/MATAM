@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <string.h>
 #include "AsciiArtTool.h"
 
 int main(int argc, char **argv) {
@@ -25,6 +23,10 @@ int main(int argc, char **argv) {
     }
 
     RLEList head = asciiArtRead(input);
+    if (head == NULL)
+    {
+        return 0;
+    }
     char* encoded = "-e";
     char* inverted = "-i";
     if (!strcmp(argv[1], inverted))
@@ -42,6 +44,7 @@ int main(int argc, char **argv) {
             printf("Use the right flag");
         }
     }
+    RLEListDestroy(head);
     fclose(input);
     fclose(output);
     return 0;
