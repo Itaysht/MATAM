@@ -25,6 +25,8 @@ int main(int argc, char **argv) {
     RLEList head = asciiArtRead(input);
     if (head == NULL)
     {
+        fclose(input);
+        fclose(output);
         return 0;
     }
     char* encoded = "-e";

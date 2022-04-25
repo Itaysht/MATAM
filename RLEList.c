@@ -82,22 +82,22 @@ int RLEListSize(RLEList list)
 
 RLEListResult RLEListRemove(RLEList list, int index)
 {
-    int updated_idx = index + 1;
     if (list == NULL)
     {
         return RLE_LIST_NULL_ARGUMENT;
     }
-    if (index >= RLEListSize(list) || updated_idx < 0)
+    if (index >= RLEListSize(list) || index < 0)
     {
         return RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
+
     int counter = 0;
     RLEList prevNode = list;
     RLEList currNode = list->next;
-    while (counter <= updated_idx)
+    while (counter <= index)
     {
         counter += currNode->numOfReps;
-        if (counter > updated_idx)
+        if (counter > index)
         {
             break;
         }
@@ -111,6 +111,17 @@ RLEListResult RLEListRemove(RLEList list, int index)
     }
     else
     {
+        if (currNode->next != NULL)
+        {
+            if (prevNode->letter == currNode->next->letter)           //Merge between two nodes
+            {
+                prevNode->numOfReps += currNode->next->numOfReps;
+                prevNode->next = currNode->next->next;
+                free(currNode->next);
+                free(currNode);
+                return RLE_LIST_SUCCESS;
+            }
+        }
         prevNode->next = currNode->next;
         free(currNode);
     }
@@ -157,16 +168,16 @@ char RLEListGet(RLEList list, int index, RLEListResult *result)
     return 0;             //won't get here anyway
 }
 
-RLEListResult RLEListMap(RLEList list, MapFunction map_function)
-{
-    if ((list == NULL) || (map_function == NULL))
+RLEListResult RLEListMap(RLEList list, MapFunction map_function)   //Assuming that with a given char
+{                                                                  //the function won't necessarily return
+    if ((list == NULL) || (map_function == NULL))                  //the same char
     {
         return RLE_LIST_NULL_ARGUMENT;
     }
 
     int length = RLEListSize(list);
-    char* convert_to_string = (char*) malloc(length);
-    if (convert_to_string == NULL)
+    char* convert_to_string = (char*) malloc(length);      //Because of the assumption. I'm aware of
+    if (convert_to_string == NULL)                         //the big amount of space that is used
     {
         return RLE_LIST_OUT_OF_MEMORY;
     }
