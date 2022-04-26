@@ -1,5 +1,5 @@
 //
-// Created by נדב on 16/04/2022.
+// Created by itay on 16/04/2022.
 //
 
 #ifndef HW1_ASCIIARTTOOL_H
